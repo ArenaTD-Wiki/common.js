@@ -1,3 +1,5 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
+/*
 /*Quiz*/
 window.quizName = "Quiz";
 window.quizLang = "en";
@@ -206,5 +208,49 @@ window.questions = [
 			} );
 		}
 	};
-/*Runs up till line 212 on the current code*/
-  
+
+	var logError = function( message ) {
+		if ( window.console ) {
+			window.console.error( message );
+		}
+	};
+
+	$.fn.cbpQTRotator = function( options ) {
+		if ( typeof options === 'string' ) {
+			var args = Array.prototype.slice.call( arguments, 1 );
+			this.each(function() {
+				var instance = $.data( this, 'cbpQTRotator' );
+				if ( !instance ) {
+					logError( "cannot call methods on cbpQTRotator prior to initialization; " +
+					"attempted to call method '" + options + "'" );
+					return;
+				}
+				if ( !$.isFunction( instance[options] ) || options.charAt(0) === "_" ) {
+					logError( "no such method '" + options + "' for cbpQTRotator instance" );
+					return;
+				}
+				instance[ options ].apply( instance, args );
+			});
+		} 
+		else {
+			this.each(function() {	
+				var instance = $.data( this, 'cbpQTRotator' );
+				if ( instance ) {
+					instance._init();
+				}
+				else {
+					instance = $.data( this, 'cbpQTRotator', new $.CBPQTRotator( options, this ) );
+				}
+			});
+		}
+		return this;
+	};
+
+} )( jQuery, window );
+
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers for secret mail. Are you sure you want to read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1000
+};
